@@ -17,12 +17,23 @@ use Elasticsearch\Common\Exceptions\RuntimeException;
  */
 class Index extends AbstractEndpoint
 {
+    /**
+     * Whether the document should be replaced or not
+     */
+    private $replace = false;
+
     public function setBody($body): Index
     {
         if (isset($body) !== true) {
             return $this;
         }
         $this->body = $body;
+        return $this;
+    }
+
+    public function setReplace(bool $replace): Index
+    {
+        $this->replace = $replace;
         return $this;
     }
 
@@ -43,7 +54,10 @@ class Index extends AbstractEndpoint
 
         if (isset($id)) {
             return "/$index/$type/$id";
+        } elseif ($this->replace) {
+            throw new RuntimeException('An ID must be set when replacing a document.');
         }
+
         return "/$index/$type";
     }
 
@@ -66,7 +80,7 @@ class Index extends AbstractEndpoint
 
     public function getMethod(): string
     {
-        return 'POST';
+        return $this->replace ? 'PUT' : 'POST';
     }
 
     /**

@@ -917,6 +917,7 @@ class Client
         $index = $this->extractArgument($params, 'index');
         $type = $this->extractArgument($params, 'type');
         $body = $this->extractArgument($params, 'body');
+        $replace = $this->extractArgument($params, 'replace');
 
         /**
         * @var callable $endpointBuilder
@@ -929,6 +930,7 @@ class Client
         $endpoint = $endpointBuilder('Index');
         $endpoint->setID($id)
             ->setIndex($index)
+            ->setReplace($replace ?? false)
             ->setType($type)
             ->setBody($body);
         $endpoint->setParams($params);
